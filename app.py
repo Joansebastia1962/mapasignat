@@ -1,22 +1,38 @@
-
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
-import matplotlib.colors as mcolors
+import plotly.express as px
 
-SHEET_ID = "1gGUufZyh5lZSa5NVzpz725Rwifxhc4OyYgoKju4yYeo"
-SHEET_NAME = "Full1"
-URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
+# Llegim les dades des del Google Sheets publicat com a CSV
+URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHGPTp7clJ4bIpnlqMJBwaYIHKcini9KHMrqzWGs_svIJh-jQkPGh6WlDn7_IRWVYg38nsDGBfqbxs/pub?output=csv"
 
-st.set_page_config(layout="wide")
-st.title("Distribució de docents i signatures per Servei Territorial")
-
-@st.cache_data(ttl=600)
+@st.cache_data
 def carregar_dades():
-    return pd.read_csv(URL)
+    df = pd.read_csv(URL)
+    return df
 
 df = carregar_dades()
 
-# (Aquí va el codi complet del gràfic que ja tens a la versió llarga)
-st.write(df)
+# Assegurem que les columnes tinguin noms clars
+df.columns = ["Servei Territorial", "Professorat", "Signatures (%)"]
+
+# Color segons percentatge: 0% blanc, 100% verd intens
+colors = px.colors.sequential.Greens
+df["color"] = px.colors.sample_colorscale(colors, df["Signatures (%)"]/100)
+
+fig = px.treemap(
+    df,
+    path=["Servei Territorial"],
+    values="Professorat",
+    color="Signatures (%)",
+    color_continuous_scale="Greens",
+)
+
+fig.update_traces(textinfo="label+text+value", textfont_size=14)
+
+st.title("Distribució dels docents per serveis territorials i signatures recollides")
+
+st.plotly_chart(fig, use_container_width=True)
+
+# Llegenda visual separada
+st.markdown("### Llegenda de color segons % de signatures")
+st.image("https://raw.githubusercontent.com/plotly/plotly.py/master/doc/img/continuous_color_scales/greens.png")
