@@ -17,6 +17,7 @@ df.columns = ["Servei Territorial", "Professorat", "Signatures (%)"]
 
 # Color segons percentatge: 0% blanc, 100% verd intens
 colors = px.colors.sequential.Greens
+df["Signatures (%)"] = df["Signatures (%)"].str.replace('%', '').astype(float)
 df["color"] = px.colors.sample_colorscale(colors, df["Signatures (%)"]/100)
 
 fig = px.treemap(
