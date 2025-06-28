@@ -9,6 +9,7 @@ def carregar_dades():
     df = pd.read_csv(URL)
     df["Signatures_num"] = df["Signatures(%)"].astype(str).str.replace('%', '').astype(float)
     df["Signatures_normalized"] = df["Signatures_num"] / 100
+    df["Servei Territorial"] = df["Servei Territorial"].fillna("Sense Servei Territorial")
     df["Comarca"] = df["Comarca"].fillna("Sense comarca")
     df["Municipi"] = df["Municipi"].fillna("Sense municipi")
     return df
@@ -21,6 +22,8 @@ if st.button("🔄 Refresca dades"):
     st.cache_data.clear()
 
 df = carregar_dades()
+
+st.write("Valors Servei Territorial:", df["Servei Territorial"].unique())
 
 fig = px.treemap(
     df,
@@ -42,7 +45,7 @@ fig = px.treemap(
 fig.update_traces(
     texttemplate="%{label}<br>Professorat: %{value}<br>Signatures: %{customdata[0]}",
     textinfo="label+value+percent entry",
-    maxdepth=1  # 🔑 Només un nivell visible a la vegada amb drilldown
+    maxdepth=None  # 🔍 Sense limit per comprovar fills visibles
 )
 
 st.plotly_chart(fig, use_container_width=True)
