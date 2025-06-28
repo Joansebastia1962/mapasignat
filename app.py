@@ -22,7 +22,7 @@ if st.button("🔄 Refresca dades"):
 
 df = carregar_dades()
 
-df["Etiqueta"] = df["Municipi"] + " " + df["Signatures(%)"]
+df["Etiqueta"] = df["Municipi"] + "<br>Professorat: " + df["Professorat"].astype(str) + "<br>Signatures: " + df["Signatures(%)"]
 
 fig = px.treemap(
     df,
@@ -40,6 +40,6 @@ fig = px.treemap(
     }
 )
 
-fig.update_traces(textinfo="label+text", text=df["Etiqueta"])
+fig.update_traces(textinfo="text", text=df["Etiqueta"])
 
 st.plotly_chart(fig, use_container_width=True)
