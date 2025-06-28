@@ -50,7 +50,7 @@ elif opcio == "Detall Barcelonès":
     df["Etiqueta"] = df["municipi"] + " " + df["Signatures(%)"]
     fig = px.treemap(
         df,
-        path=[px.Constant("Barcelonès")],
+        path=[px.Constant("Barcelonès"), "municipi"],  # Correcte: 2 nivells!
         values="Professorat",
         color="Signatures_normalized",
         color_continuous_scale=px.colors.sequential.Greens,
