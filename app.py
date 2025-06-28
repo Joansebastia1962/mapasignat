@@ -45,13 +45,13 @@ elif opcio == "Detall Barcelonès":
     df["Etiqueta"] = df["Signatures(%)"]
     fig = px.treemap(
         df,
-        path=[px.Constant("Barcelonès"), "Municipi"],
+        path=[px.Constant("Barcelonès"), "municipi"],
         values="Professorat ",
         color="Signatures_normalized",
         color_continuous_scale=px.colors.sequential.Greens,
         range_color=[0, 1],
         hover_data={
-            "Municipi": True,
+            "municipi": True,
             "Professorat ": True,
             "Signatures(%)": True,
         }
