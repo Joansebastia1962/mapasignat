@@ -14,7 +14,7 @@ def carregar_dades():
     df["Municipi"] = df["Municipi"].fillna("Sense municipi")
     return df
 
-st.set_page_config(layout="wide", page_title="Treemap Docents 3 nivells")
+st.set_page_config(layout="wide", page_title="Treemap Docents 3 nivells Drilldown")
 
 st.title("Distribució de docents i signatures per Servei Territorial, Comarca i Municipi")
 
@@ -22,8 +22,6 @@ if st.button("🔄 Refresca dades"):
     st.cache_data.clear()
 
 df = carregar_dades()
-
-st.write("Valors Servei Territorial:", df["Servei Territorial"].unique())
 
 fig = px.treemap(
     df,
@@ -44,8 +42,8 @@ fig = px.treemap(
 
 fig.update_traces(
     texttemplate="%{label}<br>Professorat: %{value}<br>Signatures: %{customdata[0]}",
-    textinfo="label+value+percent entry",
-    maxdepth=None  # 🔍 Sense limit per comprovar fills visibles
+    maxdepth=1,  # 🔑 Només un nivell visible a la vegada
+    branchvalues="total"
 )
 
 st.plotly_chart(fig, use_container_width=True)
