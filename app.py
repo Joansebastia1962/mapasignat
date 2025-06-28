@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHGPTp7clJ4bIpnlqMJBwaYIHKcini9KHMrqzWGs_svIJh-jQkPGh6WlDn7_IRWVYg38nsDGBfqbxs/pub?output=csv"
+URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9xdRzcT8h1HKy6dqWcKbmaZbHjwKBOXPg_nPMEyavtqdG4PS3ELOtU4wR5XIRd7h4HOHwWl5bRaMv/pub?gid=1039067264&single=true&output=csv"
 
 @st.cache_data
 def carregar_dades():
@@ -14,20 +14,14 @@ def carregar_dades():
     df["Municipi"] = df["Municipi"].fillna("Sense municipi")
     return df
 
-st.set_page_config(layout="wide", page_title="Treemap Docents 3 nivells DEBUG")
+st.set_page_config(layout="wide", page_title="Treemap Docents 3 nivells Drilldown")
 
-st.title("DEBUG: Veure dataframe complet i agrupacions")
+st.title("Distribució de docents i signatures per Servei Territorial, Comarca i Municipi")
 
 if st.button("🔄 Refresca dades"):
     st.cache_data.clear()
 
 df = carregar_dades()
-
-st.subheader("DataFrame complet:")
-st.write(df)
-
-st.subheader("Agrupació per Servei Territorial:")
-st.write(df.groupby("Servei Territorial")["Professorat"].sum())
 
 fig = px.treemap(
     df,
