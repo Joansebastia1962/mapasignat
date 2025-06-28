@@ -2,62 +2,44 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-URL_GENERAL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHGPTp7clJ4bIpnlqMJBwaYIHKcini9KHMrqzWGs_svIJh-jQkPGh6WlDn7_IRWVYg38nsDGBfqbxs/pub?output=csv"
-URL_BARCELONES = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHGPTp7clJ4bIpnlqMJBwaYIHKcini9KHMrqzWGs_svIJh-jQkPGh6WlDn7_IRWVYg38nsDGBfqbxs/pub?gid=2070387911&single=true&output=csv"
+URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHGPTp7clJ4bIpnlqMJBwaYIHKcini9KHMrqzWGs_svIJh-jQkPGh6WlDn7_IRWVYg38nsDGBfqbxs/pub?output=csv"
 
 @st.cache_data
-def carregar_dades(url):
-    df = pd.read_csv(url)
+def carregar_dades():
+    df = pd.read_csv(URL)
     df["Signatures_num"] = df["Signatures(%)"].astype(str).str.replace('%', '').astype(float)
     df["Signatures_normalized"] = df["Signatures_num"] / 100
+    df["Comarca"] = df["Comarca"].fillna("Sense comarca")
+    df["Municipi"] = df["Municipi"].fillna("Sense municipi")
     return df
 
-st.set_page_config(layout="wide", page_title="Treemap Docents")
+st.set_page_config(layout="wide", page_title="Treemap Docents 3 nivells")
 
-st.title("Distribució de docents i signatures")
+st.title("Distribució de docents i signatures per Servei Territorial, Comarca i Municipi")
 
 if st.button("🔄 Refresca dades"):
     st.cache_data.clear()
 
-opcio = st.selectbox(
-    "Selecciona la visualització:",
-    ["General", "Detall Barcelonès"]
+df = carregar_dades()
+
+df["Etiqueta"] = df["Municipi"] + " " + df["Signatures(%)"]
+
+fig = px.treemap(
+    df,
+    path=[px.Constant("Catalunya"), "Servei Territorial", "Comarca", "Municipi"],
+    values="Professorat",
+    color="Signatures_normalized",
+    color_continuous_scale=px.colors.sequential.Greens,
+    range_color=[0, 1],
+    hover_data={
+        "Servei Territorial": True,
+        "Comarca": True,
+        "Municipi": True,
+        "Professorat": True,
+        "Signatures(%)": True,
+    }
 )
 
-if opcio == "General":
-    df = carregar_dades(URL_GENERAL)
-    df["Etiqueta"] = df["Signatures(%)"]
-    fig = px.treemap(
-        df,
-        path=[px.Constant("Catalunya"), "Servei Territorial"],
-        values="Professorat",
-        color="Signatures_normalized",
-        color_continuous_scale=px.colors.sequential.Greens,
-        range_color=[0, 1],
-        hover_data={
-            "Servei Territorial": True,
-            "Professorat": True,
-            "Signatures(%)": True,
-        }
-    )
-    fig.update_traces(textinfo="label+text", text=df["Etiqueta"])
-    st.plotly_chart(fig, use_container_width=True)
+fig.update_traces(textinfo="label+text", text=df["Etiqueta"])
 
-elif opcio == "Detall Barcelonès":
-    df = carregar_dades(URL_BARCELONES)
-    df["Etiqueta"] = df["municipi"] + " " + df["Signatures(%)"]
-    fig = px.treemap(
-        df,
-        path=[px.Constant("Barcelonès"), "municipi"],
-        values="Professorat",
-        color="Signatures_normalized",
-        color_continuous_scale=px.colors.sequential.Greens,
-        range_color=[0, 1],
-        hover_data={
-            "municipi": True,
-            "Professorat": True,
-            "Signatures(%)": True,
-        }
-    )
-    fig.update_traces(textinfo="text", text=df["Etiqueta"])
-    st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
