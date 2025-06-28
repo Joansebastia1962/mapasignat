@@ -42,7 +42,7 @@ fig = px.treemap(
 fig.update_traces(
     texttemplate="%{label}<br>Professorat: %{value}<br>Signatures: %{customdata[0]}",
     textinfo="label+value+percent entry",
-    maxdepth=3
+    maxdepth=1  # 🔑 Només un nivell visible a la vegada amb drilldown
 )
 
 st.plotly_chart(fig, use_container_width=True)
