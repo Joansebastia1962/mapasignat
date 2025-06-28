@@ -8,7 +8,7 @@ URL_BARCELONES = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHGPTp7clJ4bI
 @st.cache_data
 def carregar_dades(url):
     df = pd.read_csv(url)
-    df["Signatures_num"] = df["Signatures(%)"].str.replace('%', '').astype(float)
+    df["Signatures_num"] = df["Signatures(%)"].astype(str).str.replace('%', '').astype(float)
     df["Signatures_normalized"] = df["Signatures_num"] / 100
     return df
 
