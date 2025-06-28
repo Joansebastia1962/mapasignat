@@ -15,9 +15,7 @@ st.set_page_config(layout="wide", page_title="Treemap Docents")
 df = carregar_dades()
 
 df["Signatures_normalized"] = df["Signatures_num"] / 100
-
-# Debug opcional: veure columnes
-st.write("Columnes disponibles:", df.columns.tolist())
+df["Etiqueta"] = df["Servei Territorial"] + "<br>" + df["Signatures(%)"]
 
 fig = px.treemap(
     df,
@@ -25,6 +23,7 @@ fig = px.treemap(
     values="Professorat ",
     color="Signatures_normalized",
     color_continuous_scale=px.colors.sequential.Greens,
+    range_color=[0, 1],
     hover_data={
         "Servei Territorial": True,
         "Professorat ": True,
@@ -32,7 +31,7 @@ fig = px.treemap(
     }
 )
 
-fig.update_traces(texttemplate=df["Signatures(%)"])
+fig.update_traces(textinfo="label+text", text=df["Etiqueta"])
 
 fig.update_layout(
     margin=dict(t=30, l=0, r=0, b=0),
