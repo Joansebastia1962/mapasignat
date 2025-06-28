@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -8,14 +7,13 @@ URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHGPTp7clJ4bIpnlqMJBwaYI
 @st.cache_data
 def carregar_dades():
     df = pd.read_csv(URL)
-    df["Signatures_num"] = df["Signatures (%)"].str.replace('%', '').astype(float)
+    df["Signatures_num"] = df["Signatures(%)"].str.replace('%', '').astype(float)
     return df
 
 st.set_page_config(layout="wide", page_title="Treemap Docents")
 
 df = carregar_dades()
 
-# Normalització del color entre 0 i 100 manualment
 df["Signatures_normalized"] = df["Signatures_num"] / 100
 
 fig = px.treemap(
@@ -24,14 +22,15 @@ fig = px.treemap(
     values="Docents",
     color="Signatures_normalized",
     color_continuous_scale=px.colors.sequential.Greens,
-    hover_data={"Docents": True, "Signatures (%)": True, "Signatures_normalized": False},
+    hover_data={"Docents": True, "Signatures(%)": True, "Signatures_normalized": False},
 )
 
-fig.update_traces(texttemplate=df["Signatures (%)"])
+fig.update_traces(texttemplate=df["Signatures(%)"])
+
 fig.update_layout(
     margin=dict(t=30, l=0, r=0, b=0),
     coloraxis_showscale=False
 )
 
-st.title("Distribució dels docents per comarques i signatures recollides")
+st.title("Distribució dels docents per serveis territorials i signatures recollides")
 st.plotly_chart(fig, use_container_width=True)
