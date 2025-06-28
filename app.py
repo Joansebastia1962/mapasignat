@@ -27,13 +27,13 @@ if opcio == "General":
     fig = px.treemap(
         df,
         path=[px.Constant("Catalunya"), "Servei Territorial"],
-        values="Professorat ",
+        values="Professorat",
         color="Signatures_normalized",
         color_continuous_scale=px.colors.sequential.Greens,
         range_color=[0, 1],
         hover_data={
             "Servei Territorial": True,
-            "Professorat ": True,
+            "Professorat": True,
             "Signatures(%)": True,
         }
     )
@@ -42,19 +42,19 @@ if opcio == "General":
 
 elif opcio == "Detall Barcelonès":
     df = carregar_dades(URL_BARCELONES)
-    df["Etiqueta"] = df["Signatures(%)"]
+    df["Etiqueta"] = df["municipi"] + " " + df["Signatures(%)"]
     fig = px.treemap(
         df,
-        path=[px.Constant("Barcelonès"), "municipi"],
-        values="Professorat ",
+        path=[px.Constant("Barcelonès")],
+        values="Professorat",
         color="Signatures_normalized",
         color_continuous_scale=px.colors.sequential.Greens,
         range_color=[0, 1],
         hover_data={
             "municipi": True,
-            "Professorat ": True,
+            "Professorat": True,
             "Signatures(%)": True,
         }
     )
-    fig.update_traces(textinfo="label+text", text=df["Etiqueta"])
+    fig.update_traces(textinfo="text", text=df["Etiqueta"])
     st.plotly_chart(fig, use_container_width=True)
