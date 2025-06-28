@@ -22,8 +22,6 @@ if st.button("🔄 Refresca dades"):
 
 df = carregar_dades()
 
-df["Etiqueta"] = df["Municipi"] + "<br>Professorat: " + df["Professorat"].astype(str) + "<br>Signatures: " + df["Signatures(%)"]
-
 fig = px.treemap(
     df,
     path=[px.Constant("Catalunya"), "Servei Territorial", "Comarca", "Municipi"],
@@ -31,6 +29,7 @@ fig = px.treemap(
     color="Signatures_normalized",
     color_continuous_scale=px.colors.sequential.Greens,
     range_color=[0, 1],
+    custom_data=["Signatures(%)"],
     hover_data={
         "Servei Territorial": True,
         "Comarca": True,
@@ -40,6 +39,10 @@ fig = px.treemap(
     }
 )
 
-fig.update_traces(textinfo="text", text=df["Etiqueta"])
+fig.update_traces(
+    texttemplate="%{label}<br>Professorat: %{value}<br>Signatures: %{customdata[0]}",
+    textinfo="label+value+percent entry",
+    maxdepth=3
+)
 
 st.plotly_chart(fig, use_container_width=True)
