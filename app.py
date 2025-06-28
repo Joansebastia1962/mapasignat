@@ -16,13 +16,20 @@ df = carregar_dades()
 
 df["Signatures_normalized"] = df["Signatures_num"] / 100
 
+# Debug opcional: veure columnes
+st.write("Columnes disponibles:", df.columns.tolist())
+
 fig = px.treemap(
     df,
     path=[px.Constant("Catalunya"), "Servei Territorial"],
-    values="Docents",
+    values="Professorat ",
     color="Signatures_normalized",
     color_continuous_scale=px.colors.sequential.Greens,
-    hover_data={"Docents": True, "Signatures(%)": True, "Signatures_normalized": False},
+    hover_data={
+        "Servei Territorial": True,
+        "Professorat ": True,
+        "Signatures(%)": True,
+    }
 )
 
 fig.update_traces(texttemplate=df["Signatures(%)"])
