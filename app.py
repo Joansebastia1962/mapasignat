@@ -14,14 +14,20 @@ def carregar_dades():
     df["Municipi"] = df["Municipi"].fillna("Sense municipi")
     return df
 
-st.set_page_config(layout="wide", page_title="Treemap Docents 3 nivells Drilldown")
+st.set_page_config(layout="wide", page_title="Treemap Docents 3 nivells DEBUG")
 
-st.title("Distribució de docents i signatures per Servei Territorial, Comarca i Municipi")
+st.title("DEBUG: Veure dataframe complet i agrupacions")
 
 if st.button("🔄 Refresca dades"):
     st.cache_data.clear()
 
 df = carregar_dades()
+
+st.subheader("DataFrame complet:")
+st.write(df)
+
+st.subheader("Agrupació per Servei Territorial:")
+st.write(df.groupby("Servei Territorial")["Professorat"].sum())
 
 fig = px.treemap(
     df,
@@ -42,7 +48,7 @@ fig = px.treemap(
 
 fig.update_traces(
     texttemplate="%{label}<br>Professorat: %{value}<br>Signatures: %{customdata[0]}",
-    maxdepth=1,  # 🔑 Només un nivell visible a la vegada
+    maxdepth=1,
     branchvalues="total"
 )
 
