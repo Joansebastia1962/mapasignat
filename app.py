@@ -26,7 +26,6 @@ opcio = st.selectbox(
 
 if opcio == "General":
     df = carregar_dades(URL_GENERAL)
-    st.write("Columnes General:", df.columns.tolist())
     df["Etiqueta"] = df["Signatures(%)"]
     fig = px.treemap(
         df,
@@ -46,11 +45,10 @@ if opcio == "General":
 
 elif opcio == "Detall Barcelonès":
     df = carregar_dades(URL_BARCELONES)
-    st.write("Columnes Detall Barcelonès:", df.columns.tolist())
     df["Etiqueta"] = df["municipi"] + " " + df["Signatures(%)"]
     fig = px.treemap(
         df,
-        path=[px.Constant("Barcelonès"), "municipi"],  # Correcte: 2 nivells!
+        path=[px.Constant("Barcelonès"), "municipi"],
         values="Professorat",
         color="Signatures_normalized",
         color_continuous_scale=px.colors.sequential.Greens,
