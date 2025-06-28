@@ -15,7 +15,9 @@ st.set_page_config(layout="wide", page_title="Treemap Docents")
 df = carregar_dades()
 
 df["Signatures_normalized"] = df["Signatures_num"] / 100
-df["Etiqueta"] = df["Servei Territorial"] + "<br>" + df["Signatures(%)"]
+
+# Mostra només el % com a text
+df["Etiqueta"] = df["Signatures(%)"]
 
 fig = px.treemap(
     df,
