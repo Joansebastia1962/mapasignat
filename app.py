@@ -8,7 +8,7 @@ URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa0MVPhnDx4MXxizywIfSOaz
 @st.cache_data
 def carregar_dades():
     df = pd.read_csv(URL)
-    st.write("Columnes disponibles:", df.columns)  # Verifica les columnes
+    st.write("Columnes:", df.columns)  # Per verificar
     df["Signatures_num"] = df["Signatures(%)"].str.replace('%', '').astype(float)
     df["Signatures_normalized"] = df["Signatures_num"] / 100
     return df
@@ -17,12 +17,12 @@ df = carregar_dades()
 
 st.set_page_config(layout="wide", page_title="Treemap Docents")
 
-st.title("Distribució Docents i Signatures - Jerarquia Completa")
+st.title("Distribució Docents i Signatures - Jerarquia")
 
 fig = px.treemap(
     df,
-    names="id",
-    parents="parent",
+    names="ID",
+    parents="patern",
     values="Professorat",
     color="Signatures_normalized",
     color_continuous_scale="Greens",
