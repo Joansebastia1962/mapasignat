@@ -1,55 +1,46 @@
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9xdRzcT8h1HKy6dqWcKbmaZbHjwKBOXPg_nPMEyavtqdG4PS3ELOtU4wR5XIRd7h4HOHwWl5bRaMv/pub?gid=1039067264&single=true&output=csv"
+# URL del full de càlcul
+URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa0MVPhnDx4MXxizywIfSOazaFUreIbwKmUfVh1ZpYIDlbZT2jtRroAY5vT-7Ca2SJNVZuP6GOlFej/pub?gid=0&single=true&output=csv"
 
 @st.cache_data
 def carregar_dades():
     df = pd.read_csv(URL)
-    df["Signatures_num"] = df["Signatures(%)"].astype(str).str.replace('%', '').astype(float)
+    df["Signatures_num"] = df["Signatures(%)"].str.replace('%', '').astype(float)
     df["Signatures_normalized"] = df["Signatures_num"] / 100
-    df["Servei Territorial"] = df["Servei Territorial"].fillna("Sense Servei Territorial")
-    df["Comarca"] = df["Comarca"].fillna("Sense comarca")
-    df["Municipi"] = df["Municipi"].fillna("Sense municipi")
     return df
-
-st.set_page_config(layout="wide", page_title="DEBUG Treemap Docents")
-
-st.title("DEBUG: Visualitza dades per comprovar jerarquia")
-
-if st.button("🔄 Refresca dades"):
-    st.cache_data.clear()
 
 df = carregar_dades()
 
-st.subheader("✅ DataFrame Complet")
-st.write(df)
+st.set_page_config(layout="wide", page_title="Treemap Docents")
 
-st.subheader("✅ Agrupació Servei Territorial")
-st.write(df.groupby("Servei Territorial").sum(numeric_only=True))
+st.title("Distribució Docents i Signatures")
 
 fig = px.treemap(
     df,
-    path=[px.Constant("Catalunya"), "Servei Territorial", "Comarca", "Municipi"],
+    names="id",
+    parents="parent",
     values="Professorat",
     color="Signatures_normalized",
-    color_continuous_scale=px.colors.sequential.Greens,
+    color_continuous_scale="Greens",
     range_color=[0, 1],
-    custom_data=["Signatures(%)"],
     hover_data={
-        "Servei Territorial": True,
-        "Comarca": True,
-        "Municipi": True,
         "Professorat": True,
         "Signatures(%)": True,
+        "Signatures_normalized": False
     }
 )
 
 fig.update_traces(
-    texttemplate="%{label}<br>Professorat: %{value}<br>Signatures: %{customdata[0]}",
-    maxdepth=1,
-    branchvalues="total"
+    texttemplate='%{label}<br>%{customdata[1]}',
+    textfont_size=18
 )
 
 st.plotly_chart(fig, use_container_width=True)
+
+if st.button("🔄 Refresca dades"):
+    st.cache_data.clear()
+    st.experimental_rerun()
