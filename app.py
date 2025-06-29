@@ -3,12 +3,12 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# URL del full de càlcul
-URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa0MVPhnDx4MXxizywIfSOazaFUreIbwKmUfVh1ZpYIDlbZT2jtRroAY5vT-7Ca2SJNVZuP6GOlFej/pub?gid=0&single=true&output=csv"
+URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa0MVPhnDx4MXxizywIfSOazaFUreIbwKmUfVh1ZpYIDlbZT2jtRroAY5vT-7Ca2SJNVZuP6GOlFej/pub?gid=136911370&single=true&output=csv"
 
 @st.cache_data
 def carregar_dades():
     df = pd.read_csv(URL)
+    st.write("Columnes disponibles:", df.columns)  # Verifica les columnes
     df["Signatures_num"] = df["Signatures(%)"].str.replace('%', '').astype(float)
     df["Signatures_normalized"] = df["Signatures_num"] / 100
     return df
@@ -17,7 +17,7 @@ df = carregar_dades()
 
 st.set_page_config(layout="wide", page_title="Treemap Docents")
 
-st.title("Distribució Docents i Signatures")
+st.title("Distribució Docents i Signatures - Jerarquia Completa")
 
 fig = px.treemap(
     df,
